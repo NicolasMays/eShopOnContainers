@@ -56,11 +56,8 @@ jobs:
         inlineScript: |
           az --version
           cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
-          $deployInfra = $Env:DEPLOY_INFRA
-          if($deployInfra -eq "$true"){$deployInfrastructure = $true}
-          else {$deployInfrastructure = $false}
           az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
-          . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $deployInfrastructure -useMesh $false              
+          . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -useMesh $false              
           kubectl get deployment
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webspa 
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webmvc 
