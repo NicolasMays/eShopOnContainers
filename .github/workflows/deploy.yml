@@ -58,11 +58,11 @@ jobs:
           az --version
           cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
           az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
-          if(Env:DEPLOY_INFRA = '$true')
+          if($Env:DEPLOY_INFRA = '$true')
           {
           . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -useMesh $false              
           }
-          if(Env:DEPLOY_INFRA = '$false')
+          if($Env:DEPLOY_INFRA = '$false')
           {
           . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $false -clean $false -useMesh $false
           }
