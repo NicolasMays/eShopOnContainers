@@ -35,6 +35,7 @@ env:
   ACR_USERNAME: ${{ secrets.USERNAME }}
   ACR_PASSWORD: ${{ secrets.PASSWORD }}
   DEPLOY_INFRA: ${{ github.event.inputs.deployInfra }}
+  APPINSIGHTS_KEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATION }}
 
 jobs:
 
@@ -60,7 +61,9 @@ jobs:
           . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -useMesh $false              
           kubectl get deployment
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webspa 
+          echo ----------------------------------------------------
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webmvc 
+          kubectl set env deployments --all ApplicationInsights_InstrumentationKey=$Env:APPINSIGHTS_KEY
         azPSVersion: '3.1.0'
 
         
