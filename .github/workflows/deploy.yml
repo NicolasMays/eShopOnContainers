@@ -15,7 +15,7 @@ on:
     inputs:
       deployInfra: 
         # Friendly description to be shown in the UI instead of 'name'
-        description: 'Would you like to deploy the infrastructure? ($true or $false)'
+        description: 'Would you like to deploy the infrastructure? ($true or $false) Only use this option if you have separate infrastrucure, this will still destroy infra containers if they exist.'
         # Default value if no value is explicitly provided
         default: '$true'
         # Input has to be provided for the workflow to run
@@ -58,13 +58,13 @@ jobs:
           az --version
           cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
           az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
-          if($Env:DEPLOY_INFRA = '$true')
+          if($Env:DEPLOY_INFRA -eq '$true')
           {
           . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -useMesh $false              
           }
-          if($Env:DEPLOY_INFRA = '$false')
+          if($Env:DEPLOY_INFRA -eq '$false')
           {
-          . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $false -clean $false -useMesh $false
+          . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $Env:REGISTRY_NAME.azurecr.io -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $false -useMesh $false
           }
           kubectl get deployment
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webspa 
