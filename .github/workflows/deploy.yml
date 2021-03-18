@@ -63,7 +63,7 @@ jobs:
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webspa 
           echo ----------------------------------------------------
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webmvc 
-          kubectl set env deployments --all ApplicationInsights_InstrumentationKey=$Env:APPINSIGHTS_KEY
+          kubectl set env deployments --all ApplicationInsights__InstrumentationKey=$Env:APPINSIGHTS_KEY
         azPSVersion: '3.1.0'
 
         
