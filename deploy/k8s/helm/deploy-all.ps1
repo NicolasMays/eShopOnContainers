@@ -29,6 +29,7 @@ function Install-Chart  {
         }
     }
     if ($customRegistry) {
+        Write-Host "Using custom registry $registry, $dockerUser"
         $options = "$options --set inf.registry.server=$registry --set inf.registry.login=$dockerUser --set inf.registry.pwd=$dockerPassword --set inf.registry.secretName=eshop-docker-scret"
     }
     
