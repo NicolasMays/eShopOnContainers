@@ -108,7 +108,7 @@ if ($clean) {
 }
 
 $useCustomRegistry=$false
-
+Write-Host "Registry: $registry"
 if (-not [string]::IsNullOrEmpty($registry)) {
     $useCustomRegistry=$true
     if ([string]::IsNullOrEmpty($dockerUser) -or [string]::IsNullOrEmpty($dockerPassword)) {
