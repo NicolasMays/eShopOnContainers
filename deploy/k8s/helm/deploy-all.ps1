@@ -23,14 +23,14 @@ function Install-Chart  {
     Param([string]$chart,[string]$initialOptions, [bool]$customRegistry)
     $options=$initialOptions
     if ($sslEnabled) {
-        $options = "$options --set ingress.tls[0].secretName=$tlsSecretName --set ingress.tls[0].hosts={$dns}" 
+        $options = "$options --set ingress.tls[0].secretName=$tlsSecretName --set ingress.tls[0].hosts={$dns} --debug" 
         if ($sslSupport -ne "custom") {
             $options = "$options --set inf.tls.issuer=$sslIssuer"
         }
     }
     if ($customRegistry) {
         Write-Host "Using custom registry $registry, $dockerUser"
-        $options = "$options --set inf.registry.server=$registry --set inf.registry.login=$dockerUser --set inf.registry.pwd=$dockerPassword --set inf.registry.secretName=eshop-docker-scret"
+        $options = "$options --set inf.registry.server=$registry --set inf.registry.login=$dockerUser --set inf.registry.pwd=$dockerPassword --set inf.registry.secretName=eshop-docker-scret --debug" 
     }
     
     if ($chart -ne "eshop-common" -or $customRegistry)  {       # eshop-common is ignored when no secret must be deployed        
@@ -44,9 +44,9 @@ $dns = $externalDns
 $sslEnabled=$false
 $sslIssuer=""
 
-helm repo add stable https://charts.helm.sh/stable
-Write-Host "Update repo"
-helm repo update
+#helm repo add stable https://charts.helm.sh/stable
+#Write-Host "Update repo"
+#helm repo update
 
 if ($sslSupport -eq "staging") {
     $sslEnabled=$true
