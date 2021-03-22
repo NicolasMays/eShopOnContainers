@@ -34,7 +34,7 @@ function Install-Chart  {
     }
     
     if ($chart -ne "eshop-common" -or $customRegistry)  {       # eshop-common is ignored when no secret must be deployed        
-        $command = "install $appName-$chart $options ./$chart"
+        $command = "install $appName-$chart $options $chart"
         Write-Host "Helm Command: helm $command" -ForegroundColor Gray
         Invoke-Expression 'cmd /c "helm $command"'
     }
@@ -43,6 +43,8 @@ function Install-Chart  {
 $dns = $externalDns
 $sslEnabled=$false
 $sslIssuer=""
+helm repo list
+helm repo update
 
 if ($sslSupport -eq "staging") {
     $sslEnabled=$true
@@ -126,7 +128,7 @@ $gateways = ("apigwms", "apigwws")
 if ($deployInfrastructure) {
     foreach ($infra in $infras) {
         Write-Host "Installing infrastructure: $infra" -ForegroundColor Green
-        helm install "$appName-$infra" -f app.yaml -f inf.yaml -f $ingressValuesFile --set app.name=$appName --set inf.k8s.dns=$dns --set "ingress.hosts={$dns}" $infra     
+        helm install "$appName-$infra" -f app.yaml -f inf.yaml -f $ingressValuesFile --set app.name=$appName --set inf.k8s.dns=$dns --set "ingress.hosts={$dns}" "stable/$infra"     
     }
 }
 else {
