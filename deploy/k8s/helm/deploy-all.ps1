@@ -22,6 +22,7 @@ Param(
 function Install-Chart  {
     Param([string]$chart,[string]$initialOptions, [bool]$customRegistry)
     $options=$initialOptions
+    helm env
     Write-Host "Adding repo stable" 
     helm repo add stable https://charts.helm.sh/stable
     Write-Host "Update repo"
