@@ -45,6 +45,7 @@ $sslEnabled=$false
 $sslIssuer=""
 helm repo list
 helm repo update
+helm init
 
 if ($sslSupport -eq "staging") {
     $sslEnabled=$true
@@ -128,7 +129,7 @@ $gateways = ("apigwms", "apigwws")
 if ($deployInfrastructure) {
     foreach ($infra in $infras) {
         Write-Host "Installing infrastructure: $infra" -ForegroundColor Green
-        helm install "$appName-$infra" -f app.yaml -f inf.yaml -f $ingressValuesFile --set app.name=$appName --set inf.k8s.dns=$dns --set "ingress.hosts={$dns}" "stable/$infra"     
+        helm install "$appName-$infra" -f app.yaml -f inf.yaml -f $ingressValuesFile --set app.name=$appName --set inf.k8s.dns=$dns --set "ingress.hosts={$dns}" $infra    
     }
 }
 else {
