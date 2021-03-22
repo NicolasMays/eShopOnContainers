@@ -53,15 +53,16 @@ jobs:
       with:
         inlineScript: |
           az --version
+          cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
           # Get AKS credentials for kubectl
           az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
           
           # Set container registry url 
           $containerRegestry = $Env:REGISTRY_NAME + '.azurecr.io'
           helm env
-          helm repo add stable https://charts.helm.sh/stable
+          #helm repo add stable https://charts.helm.sh/stable
           Write-Host "Update repo"
-          helm repo update
+          #helm repo update
           helm version
           # If DEPLOY_INFRA is true remove all servicesand infra then deploy all services and infra
           if($Env:DEPLOY_INFRA -eq '$true')
