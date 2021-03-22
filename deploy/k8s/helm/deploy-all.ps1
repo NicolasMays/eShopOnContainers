@@ -44,6 +44,10 @@ $dns = $externalDns
 $sslEnabled=$false
 $sslIssuer=""
 
+helm repo add stable https://charts.helm.sh/stable
+Write-Host "Update repo"
+helm repo update
+
 if ($sslSupport -eq "staging") {
     $sslEnabled=$true
     $tlsSecretName="eshop-letsencrypt-staging"
