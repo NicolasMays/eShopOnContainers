@@ -22,6 +22,8 @@ Param(
 function Install-Chart  {
     Param([string]$chart,[string]$initialOptions, [bool]$customRegistry)
     $options=$initialOptions
+    helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+    helm repo update
     if ($sslEnabled) {
         $options = "$options --set ingress.tls[0].secretName=$tlsSecretName --set ingress.tls[0].hosts={$dns}" 
         if ($sslSupport -ne "custom") {
@@ -36,7 +38,6 @@ function Install-Chart  {
     if ($chart -ne "eshop-common" -or $customRegistry)  {       # eshop-common is ignored when no secret must be deployed        
         $command = "install $appName-$chart $options $chart"
         Write-Host "Helm Command: helm $command" -ForegroundColor Gray
-        helm repo update
         Invoke-Expression 'cmd /c "helm $command"'
     }
 }
