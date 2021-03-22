@@ -63,6 +63,7 @@ jobs:
           helm repo add stable https://charts.helm.sh/stable
           Write-Host "Update repo"
           helm repo update
+          helm version
           # If DEPLOY_INFRA is true remove all servicesand infra then deploy all services and infra
           if($Env:DEPLOY_INFRA -eq '$true')
           {
