@@ -29,9 +29,6 @@ env:
   REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
   CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
   CLUSTER_RESOURCE_GROUP: ${{ secrets.CLUSTER_RG }}
-  REGISTRY_ENDPOINT: ${{ secrets.REGISTRY_ENDPOINT }}
-  NAMESPACE: default
-  WORKSPACE: $GITHUB_WORKSPACE
   ACR_USERNAME: ${{ secrets.USERNAME }}
   ACR_PASSWORD: ${{ secrets.PASSWORD }}
   DEPLOY_INFRA: ${{ github.event.inputs.deployInfra }}
@@ -61,7 +58,11 @@ jobs:
           
           # Set container registry url 
           $containerRegestry = $Env:REGISTRY_NAME + '.azurecr.io'
-
+          helm env
+          Write-Host "Adding repo stable" 
+          helm repo add stable https://charts.helm.sh/stable
+          Write-Host "Update repo"
+          helm repo update
           # If DEPLOY_INFRA is true remove all servicesand infra then deploy all services and infra
           if($Env:DEPLOY_INFRA -eq '$true')
           {
