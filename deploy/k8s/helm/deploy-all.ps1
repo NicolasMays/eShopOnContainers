@@ -44,8 +44,6 @@ $dns = $externalDns
 $sslEnabled=$false
 $sslIssuer=""
 helm repo list
-helm repo update
-helm init
 
 if ($sslSupport -eq "staging") {
     $sslEnabled=$true
