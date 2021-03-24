@@ -49,6 +49,11 @@ jobs:
       env:
         TAG: ${{ env.BRANCH }}
         REGISTRY: ${{ secrets.REGISTRY_ENDPOINT }}
+    
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: src/tests-results/*.xml
 
     - uses: dorny/test-reporter@v1
       with:
@@ -56,7 +61,7 @@ jobs:
         name: .NET Tests                  # Name of the check run which will be created
         path: ./**/*test-results.xml      # Path to test results
         reporter: dotnet-trx              # Format of test results
-        files: ./**/*test-results.xml
+        files: '*test-results.xml'
 
   BuildLinux:
     runs-on: ubuntu-latest
