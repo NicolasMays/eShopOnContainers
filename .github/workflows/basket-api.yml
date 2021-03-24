@@ -51,7 +51,7 @@ jobs:
         REGISTRY: ${{ secrets.REGISTRY_ENDPOINT }}
 
     - name: Compose test ${{ env.SERVICE }}
-      run: sudo -E docker-compose -f .\docker-compose-tests.yml -f .\docker-compose-tests.override.yml up ${{ env.SERVICE }}-functional-test ${{ env.SERVICE }}-unit-test
+      run: sudo -E docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml up ${{ env.SERVICE }}-functional-test ${{ env.SERVICE }}-unit-test
       working-directory: ./src
       shell: bash
       env:
