@@ -62,7 +62,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v1
       if: always()
       with:
-        files: tests-results/**/*.xml
+        files: ./**/tests/**/*.xml
 
   BuildLinux:
     runs-on: ubuntu-latest
