@@ -3,8 +3,8 @@
 # To configure this workflow:
 #
 # 1. Set up the following secrets in your workspace: 
-#     a. ACR_USERNAME with ACR username
-#     b. ACR_PASSWORD with ACR Password
+#     a. USERNAME with ACR username
+#     b. PASSWORD with ACR Password
 #     c. AZURE_CREDENTIALS with the output of `az ad sp create-for-rbac --sdk-auth`
 #     d. REGISTRY_NAME with the first part of your ACR registry address <REGISTRY_NAME>.azurecr.io
 #     e. CLUSTER_NAME with the name of the AKS cluster
