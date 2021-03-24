@@ -50,10 +50,12 @@ jobs:
         TAG: ${{ env.BRANCH }}
         REGISTRY: ${{ secrets.REGISTRY_ENDPOINT }}
 
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v1
-      if: always()
+    - uses: dorny/test-reporter@v1
       with:
+        artifact: test-results            # artifact name
+        name: .NET Tests                  # Name of the check run which will be created
+        path: ./**/*test-results.xml      # Path to test results
+        reporter: dotnet-trx              # Format of test results
         files: ./**/*test-results.xml
 
   BuildLinux:
