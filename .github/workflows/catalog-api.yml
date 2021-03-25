@@ -65,7 +65,7 @@ jobs:
 
     - uses: dorny/test-reporter@v1
       with:          
-        name: .NET Tests                  # Name of the check run which will be created
+        name: Catalog .NET Tests                  # Name of the check run which will be created
         path: src/tests-results/*.xml     # Path to test results
         reporter: dotnet-trx              # Format of test results
 
