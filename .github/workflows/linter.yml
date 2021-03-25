@@ -53,3 +53,16 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: dev
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install inclusive linter
+        run: |
+          wget https://github.com/inclusivelint/inclusivelint/releases/download/<VERSION>/inclusivelint -O- | tr -d '\r' >inclusivelint
+          sudo chmod +x inclusivelint && sudo mv inclusivelint /usr/bin
+          mkdir ~/.inclusivelint
+          wget https://github.com/inclusivelint/inclusivelint/releases/download/<VERSION>/outputRelation.txt -O- | tr -d '\r' >outputRelation.txt
+          sudo mv outputRelation.txt ~/.inclusivelint
+          
+      - name: Run inclusive linter
+        run: |
+          export TERM=xterm
+          inclusivelint .
