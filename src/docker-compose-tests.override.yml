@@ -105,7 +105,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/catalog-functional-test-results.trx
+        - trx;LogFileName=/tests/catalog-functional-test-results.xml
 
   catalog-api-unit-test:
     environment:
@@ -129,7 +129,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/catalog-unit-test-results.trx
+        - trx;LogFileName=/tests/catalog-unit-test-results.xml
 
   ordering-api-functional-test:
     environment:
@@ -153,7 +153,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/ordering-functional-test-results.trx
+        - trx;LogFileName=/tests/ordering-functional-test-results.xml
 
   ordering-api-unit-test:
     environment:
@@ -177,7 +177,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/ordering-unit-test-results.trx
+        - trx;LogFileName=/tests/ordering-unit-test-results.xml
 
 
   payment-api-test:
