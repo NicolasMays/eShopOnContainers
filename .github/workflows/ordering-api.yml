@@ -50,6 +50,25 @@ jobs:
         TAG: ${{ env.BRANCH }}
         REGISTRY: ${{ secrets.REGISTRY_ENDPOINT }}
 
+    - name: Compose test ${{ env.SERVICE }}
+      run: sudo -E docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml up ${{ env.SERVICE }}-functional-test ${{ env.SERVICE }}-unit-test
+      working-directory: ./src
+      shell: bash
+      env:
+        TAG: ${{ env.BRANCH }}
+        REGISTRY: ${{ secrets.REGISTRY_ENDPOINT }}
+    
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-results
+        path: src/tests-results/*.xml
+
+    - uses: dorny/test-reporter@v1
+      with:          
+        name: .NET Tests                  # Name of the check run which will be created
+        path: src/tests-results/*.xml     # Path to test results
+        reporter: dotnet-trx              # Format of test results
+        
   BuildLinux:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' }}
