@@ -3,11 +3,15 @@
 # To configure this workflow:
 #
 # 1. Set up the following secrets in your workspace: 
-#     a. REGISTRY_USERNAME with ACR username
-#     b. REGISTRY_PASSWORD with ACR Password
+#     a. USERNAME with ACR username
+#     b. PASSWORD with ACR Password
 #     c. AZURE_CREDENTIALS with the output of `az ad sp create-for-rbac --sdk-auth`
+#     d. REGISTRY_NAME with the first part of your ACR registry address <REGISTRY_NAME>.azurecr.io
+#     e. CLUSTER_NAME with the name of the AKS cluster
+#     f. CLUSTER_RESOURCE_GROUP with the name of the AKS resource group
+#     g. APPINSIGHTS_KEY with your Application Insights instrumentation key 
 #
-# 2. Change the values for the REGISTRY_NAME, CLUSTER_NAME, CLUSTER_RESOURCE_GROUP and NAMESPACE environment variables (below).
+# 
 
 on:
   workflow_dispatch:
@@ -48,29 +52,25 @@ jobs:
         creds: ${{secrets.AZ_CREDENTIALS}}
         enable-AzPSSession: true 
         
-    - name: Run Azure PowerShell script
+    - name: Run Deployment PowerShell script
       uses: azure/powershell@v1
       with:
-        inlineScript: |
-          az --version
+        inlineScript: |          
           # Get AKS credentials for kubectl
           az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
-          
+                    
           # Set container registry url 
           $containerRegestry = $Env:REGISTRY_NAME + '.azurecr.io'
-          helm env
-          Write-Host "Adding repo stable" 
-          helm repo add stable https://charts.helm.sh/stable
-          Write-Host "Update repo"
-          helm repo update
-          helm version
-          # If DEPLOY_INFRA is true remove all servicesand infra then deploy all services and infra
+
+          cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
+          
+          # If DEPLOY_INFRA is true remove all services and infrastructure then deploy all services and infrastructure 
           if($Env:DEPLOY_INFRA -eq '$true')
           {
           . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $containerRegestry -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -useMesh $false              
           }
           
-          # If DEPLOY_INFRA is false remove all infra and services, and deploy services
+          # If DEPLOY_INFRA is false remove all infrastructure and services, and deploy services
           if($Env:DEPLOY_INFRA -eq '$false')
           {
           . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-all.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $containerRegestry -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $false -useMesh $false
@@ -84,7 +84,7 @@ jobs:
           echo "`n"
           kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webmvc 
           
-          # Add the Application Insights Instrumentation Key to all deployment as an environment variable
+          # Add the Application Insights instrumentation key to all deployment as an environment variable
           echo "Adding Application Insights Instrumentation Key `n"
           kubectl set env deployments --all ApplicationInsights__InstrumentationKey=$Env:APPINSIGHTS_KEY
         azPSVersion: '3.1.0'
