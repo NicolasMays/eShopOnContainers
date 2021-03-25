@@ -57,11 +57,10 @@ jobs:
 
     - uses: dorny/test-reporter@v1
       with:
-        artifact: test-results            # artifact name
+        artifact: my-artifact            # artifact name
         name: .NET Tests                  # Name of the check run which will be created
         path: ./**/*test-results.xml      # Path to test results
         reporter: dotnet-trx              # Format of test results
-        files: '*test-results.xml'
 
   BuildLinux:
     runs-on: ubuntu-latest
