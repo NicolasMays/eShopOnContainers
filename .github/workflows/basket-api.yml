@@ -1,16 +1,15 @@
+# REGISTRY HOST = fully qualified registry name
+
 name: basket-api
 
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
       name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'exec name'
-        # Default value if no value is explicitly provided
-        default: 'default execution'
-        # Input has to be provided for the workflow to run
+        description: 'name'
+        default: 'Build and Deploy basket-api'
         required: false
+  
   push:
     branches:
     - dev
@@ -28,10 +27,17 @@ on:
     - src/BuildingBlocks/**
     - src/Services/Basket/**
     - .github/workflows/basket-api.yml
+
 env:
   SERVICE: basket-api
   IMAGE: basket.api
-  INSTRUMENTATION_KEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATION }}
+  REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+  CLUSTER_RESOURCE_GROUP: ${{ secrets.CLUSTER_RG }}
+  ACR_USERNAME: ${{ secrets.USERNAME }}
+  ACR_PASSWORD: ${{ secrets.PASSWORD }}
+  DEPLOY_INFRA: ${{ github.event.inputs.deployInfra }}
+  APPINSIGHTS_KEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATION }}
 
 jobs:
 
@@ -42,24 +48,13 @@ jobs:
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
       
-    - name: Compose test ${{ env.SERVICE }}
-      run: sudo -E docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml up ${{ env.SERVICE }}-functional-test ${{ env.SERVICE }}-unit-test
+    - name: Compose build ${{ env.SERVICE }}
+      run: sudo -E docker-compose build ${{ env.SERVICE }}
       working-directory: ./src
       shell: bash
       env:
         TAG: ${{ env.BRANCH }}
         REGISTRY: ${{ secrets.REGISTRY_ENDPOINT }}
-    
-    - uses: actions/upload-artifact@v2
-      with:
-        name: test-results
-        path: src/tests-results/*.xml
-
-    - uses: dorny/test-reporter@v1
-      with:          
-        name: Basket .NET Tests                  # Name of the check run which will be created
-        path: src/tests-results/*.xml     # Path to test results
-        reporter: dotnet-trx              # Format of test results
 
   BuildLinux:
     runs-on: ubuntu-latest
@@ -76,7 +71,6 @@ jobs:
           sudo service docker restart
           docker version -f '{{.Client.Experimental}}'
           docker version -f '{{.Server.Experimental}}'
-
     - name: Login to Container Registry
       uses: docker/login-action@v1
       with:
@@ -112,3 +106,42 @@ jobs:
         docker --config ~/.docker manifest create ${{ secrets.REGISTRY_ENDPOINT  }}/${{ env.IMAGE  }}:${{ env.BRANCH  }} ${{ secrets.REGISTRY_ENDPOINT  }}/${{ env.IMAGE  }}:linux-${{ env.BRANCH  }}
         docker --config ~/.docker manifest push ${{ secrets.REGISTRY_ENDPOINT  }}/${{ env.IMAGE  }}:${{ env.BRANCH  }}
       shell: bash
+
+  DeployImageTok8s:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Login via Az module
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDENTIALS}}
+        enable-AzPSSession: true 
+        
+    - name: Run Deployment PowerShell script
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |          
+          # Get AKS credentials for kubectl
+          az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
+                    
+          # Set container registry url 
+          $containerRegistry = $Env:REGISTRY_NAME + '.azurecr.io'
+          cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
+          . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-singular-service.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $containerRegistry -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $false -useMesh $false -chartsToDeploy $Env:Service
+          
+          
+          # Show deployment status
+          kubectl get deployment
+          
+          # Display webMVC and webSPA URLs 
+          kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webspa 
+          echo "`n"
+          kubectl get ingresses -o jsonpath='{.spec.rules[*].host}{.spec.rules[*].http.paths[*].path}' eshop-webmvc 
+          
+          # Add the Application Insights instrumentation key deployment as an environment variable
+          $deployment = kubectl get deployments -l app=$Env:SERVICE -o jsonpath="{.items[0].metadata.name}"
+          echo "Adding Application Insights Instrumentation Key to $deployment `n"
+          kubectl set env deployments $deployment ApplicationInsights__InstrumentationKey=$Env:APPINSIGHTS_KEY
+        azPSVersion: '3.1.0'
