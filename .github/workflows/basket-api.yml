@@ -125,7 +125,10 @@ jobs:
         inlineScript: |          
           # Get AKS credentials for kubectl
           az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
-                    
+          
+          echo "services to update:"
+          echo $Env:Service
+
           # Set container registry url 
           $containerRegistry = $Env:REGISTRY_NAME + '.azurecr.io'
           cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
