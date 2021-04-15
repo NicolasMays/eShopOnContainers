@@ -127,12 +127,12 @@ jobs:
           az aks get-credentials --resource-group $Env:CLUSTER_RESOURCE_GROUP --name $Env:CLUSTER_NAME 
           
           echo "services to update:"
-          echo $Env:Service
+          echo $Env:SERVICE
 
           # Set container registry url 
           $containerRegistry = $Env:REGISTRY_NAME + '.azurecr.io'
           cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
-          . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-singular-service.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $containerRegistry -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $false -useMesh $false -chartsToDeploy $Env:Service
+          . $Env:GITHUB_WORKSPACE/deploy/k8s/helm/deploy-singular-service.ps1 -externalDns aks -aksName $Env:CLUSTER_NAME -aksRg $Env:CLUSTER_RESOURCE_GROUP -imageTag linux-dev -registry $containerRegistry -dockerUser $Env:ACR_USERNAME -dockerPassword $Env:ACR_PASSWORD -deployInfrastructure $false -useMesh $false -chartsToDeploy $Env:SERVICE
           
           
           # Show deployment status
