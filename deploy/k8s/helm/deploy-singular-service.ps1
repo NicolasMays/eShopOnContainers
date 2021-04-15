@@ -23,14 +23,13 @@ function Install-Chart  {
     Param([string]$chart,[string]$initialOptions, [bool]$customRegistry)
     $options=$initialOptions
     if ($sslEnabled) {
-        $options = "$options --set ingress.tls[0].secretName=$tlsSecretName --set ingress.tls[0].hosts={$dns} --debug" 
+        $options = "$options --set ingress.tls[0].secretName=$tlsSecretName --set ingress.tls[0].hosts={$dns}" 
         if ($sslSupport -ne "custom") {
             $options = "$options --set inf.tls.issuer=$sslIssuer"
         }
     }
     if ($customRegistry) {
-        Write-Host "Using custom registry $registry, $dockerUser"
-        $options = "$options --set inf.registry.server=$registry --set inf.registry.login=$dockerUser --set inf.registry.pwd=$dockerPassword --set inf.registry.secretName=eshop-docker-scret --debug" 
+        $options = "$options --set inf.registry.server=$registry --set inf.registry.login=$dockerUser --set inf.registry.pwd=$dockerPassword --set inf.registry.secretName=eshop-docker-scret"
     }
     
     if ($chart -ne "eshop-common" -or $customRegistry)  {       # eshop-common is ignored when no secret must be deployed        
@@ -43,7 +42,6 @@ function Install-Chart  {
 $dns = $externalDns
 $sslEnabled=$false
 $sslIssuer=""
-helm repo list
 
 if ($sslSupport -eq "staging") {
     $sslEnabled=$true
@@ -96,11 +94,15 @@ if ($useLocalk8s -and $sslEnabled) {
     exit 1
 }
 
+
+
 if ($clean) {    
-    $listOfReleases=$(helm ls --filter eshop -q)    
+write-host $chartsToDeploy
+    $listOfReleases=$(helm ls --filter $chartsToDeploy -q)    
     if ([string]::IsNullOrEmpty($listOfReleases)) {
         Write-Host "No previous releases found!" -ForegroundColor Green
 	}else{
+        write-host $listOfReleases
         Write-Host "Previous releases found" -ForegroundColor Green
         Write-Host "Cleaning previous helm releases..." -ForegroundColor Green
         helm uninstall $listOfReleases
@@ -109,7 +111,7 @@ if ($clean) {
 }
 
 $useCustomRegistry=$false
-Write-Host "Registry: $registry"
+
 if (-not [string]::IsNullOrEmpty($registry)) {
     $useCustomRegistry=$true
     if ([string]::IsNullOrEmpty($dockerUser) -or [string]::IsNullOrEmpty($dockerPassword)) {
@@ -127,18 +129,19 @@ $gateways = ("apigwms", "apigwws")
 if ($deployInfrastructure) {
     foreach ($infra in $infras) {
         Write-Host "Installing infrastructure: $infra" -ForegroundColor Green
-        helm install "$appName-$infra" -f app.yaml -f inf.yaml -f $ingressValuesFile --set app.name=$appName --set inf.k8s.dns=$dns --set "ingress.hosts={$dns}" $infra    
+        helm install "$appName-$infra" --values app.yaml --values inf.yaml --values $ingressValuesFile --set app.name=$appName --set inf.k8s.dns=$dns --set "ingress.hosts={$dns}" $infra     
     }
 }
 else {
     Write-Host "eShopOnContainers infrastructure (bbdd, redis, ...) charts aren't installed (-deployCharts is false)" -ForegroundColor Yellow
 }
 
+Write-Host "Charts to Deploy $chartsToDeploy" -ForegroundColor Red
 if ($deployCharts) {
     foreach ($chart in $charts) {
         if ($chartsToDeploy -eq "*" -or $chartsToDeploy.Contains($chart)) {
             Write-Host "Installing: $chart" -ForegroundColor Green
-            Install-Chart $chart "-f app.yaml -f inf.yaml -f $ingressValuesFile -f $ingressMeshAnnotationsFile --set app.name=$appName --set inf.k8s.dns=$dns --set ingress.hosts={$dns} --set image.tag=$imageTag --set image.pullPolicy=$imagePullPolicy --set inf.tls.enabled=$sslEnabled --set inf.mesh.enabled=$useMesh --set inf.k8s.local=$useLocalk8s" $useCustomRegistry
+            Install-Chart $chart "-f app.yaml --values inf.yaml -f $ingressValuesFile -f $ingressMeshAnnotationsFile --set app.name=$appName --set inf.k8s.dns=$dns --set ingress.hosts={$dns} --set image.tag=$imageTag --set image.pullPolicy=$imagePullPolicy --set inf.tls.enabled=$sslEnabled --set inf.mesh.enabled=$useMesh --set inf.k8s.local=$useLocalk8s" $useCustomRegistry
         }
     }
 
