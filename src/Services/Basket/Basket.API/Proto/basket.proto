@@ -32,4 +32,11 @@ message BasketItemResponse {
 	int32 quantity = 6;
 	string pictureurl = 7;
 	bool isdiscounted = 8;
+	CouponResponse coupon = 9;
+}
+message CouponResponse
+{
+	string couponcode = 1;
+	string expirationdate = 2;
+	double discount = 3;
 }

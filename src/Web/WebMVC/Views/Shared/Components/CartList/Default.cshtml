@@ -52,9 +52,9 @@
                 {
                     <div class="alert alert-warning esh-basket-margin12" role="alert">&nbsp;Coupon code was not valid.</div>
                 }
-                @if (item.OldUnitPrice != 0 && item.isDiscounted == true)
+                @if (item.OldUnitPrice != 0 && item.isDiscounted == true && item.coupon != null)
                 {
-                    <div class="alert alert-warning esh-basket-margin12" role="alert">&nbsp;Coupon Applied Original Price $ @item.OldUnitPrice; New Price @item.UnitPrice </div>
+                    <div class="alert alert-warning esh-basket-margin12" role="alert">&nbsp;Coupon Applied Original Price $ @item.OldUnitPrice; New Price @item.UnitPrice ; Code @item.coupon.CouponCode; Discount @item.coupon.Discount *100 % </div>
                 }
             </div>
             <br />

@@ -25,10 +25,9 @@ namespace Microsoft.eShopOnContainers.WebMVC.Services
             _settings = settings;
             _logger = logger;
         }
+
         public async Task<Basket> Apply(Basket basket, string couponCode)
         {
-            decimal discount = 0;
-
             List<BasketItem> Items = new List<BasketItem>();
             // Todo: Stub for now, should reach out to a coupon microservice
             // Coupon for smart hotel 360 provides a 10% discount
@@ -48,17 +47,17 @@ namespace Microsoft.eShopOnContainers.WebMVC.Services
                             OldUnitPrice = Item.UnitPrice,
                             Quantity = Item.Quantity,
                             PictureUrl = Item.PictureUrl,
-                            isDiscounted = true
+                            isDiscounted = true,
+                            coupon = new Coupon { 
+                                CouponCode = couponCode,
+                                Discount = (decimal)0.1,
+                                ExpirationDate = "04/17/2021"
+                            }
                         });
 
                     }
-                }
-            }
-            else
-            {
-                foreach (BasketItem Item in basket.Items.Select(item => item).ToList())
-                {
-                    Items.Add(
+                    else {
+                        Items.Add(
                         new BasketItem
                         {
                             Id = Item.Id,
@@ -68,9 +67,20 @@ namespace Microsoft.eShopOnContainers.WebMVC.Services
                             OldUnitPrice = Item.OldUnitPrice,
                             Quantity = Item.Quantity,
                             PictureUrl = Item.PictureUrl,
-                            isDiscounted = Item.isDiscounted
+                            isDiscounted = true,
+                            coupon = new Coupon
+                            {
+                                CouponCode = couponCode,
+                                Discount = (decimal)0.1,
+                                ExpirationDate = "04/17/2021"
+                            }
                         });
+                    }
                 }
+            }
+            else
+            {
+                return basket;
             }
             Basket basketUpdate = new Basket
             {

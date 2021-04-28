@@ -7,8 +7,9 @@
         public string ProductName { get; init; }
         public decimal UnitPrice { get; init; }
         public decimal OldUnitPrice { get; init; }
-        public bool isDiscounted { get; set; }
+        public bool isDiscounted { get; init; }
         public int Quantity { get; init; }
         public string PictureUrl { get; init; }
+        public Coupon coupon { get; init; }
     }
 }
