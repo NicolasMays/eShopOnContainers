@@ -31,6 +31,7 @@ on:
 env:
   SERVICE: ordering-backgroundtasks
   IMAGE: ordering.backgroundtasks
+  INSTRUMENTATION_KEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATION }}
 
 jobs:
 

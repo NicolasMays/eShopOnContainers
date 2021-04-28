@@ -31,6 +31,7 @@ on:
 env:
   SERVICE: webhooks-api
   IMAGE: webhooks.api
+  INSTRUMENTATION_KEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATION }}
 
 jobs:
 

@@ -31,6 +31,7 @@ on:
 env:
   SERVICE: ordering-signalrhub
   IMAGE: ordering.signalrhub
+  INSTRUMENTATION_KEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATION }}
 
 jobs:
 

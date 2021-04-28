@@ -32,6 +32,7 @@ on:
 env:
   SERVICE: webmvc
   IMAGE: webmvc
+  INSTRUMENTATION_KEY: ${{ secrets.APPINSIGHTS_INSTRUMENTATION }}
 
 jobs:
 
