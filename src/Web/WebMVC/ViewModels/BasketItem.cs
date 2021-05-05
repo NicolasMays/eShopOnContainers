@@ -10,6 +10,5 @@
         public bool isDiscounted { get; init; }
         public int Quantity { get; init; }
         public string PictureUrl { get; init; }
-        public Coupon coupon { get; init; }
     }
 }

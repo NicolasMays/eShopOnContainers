@@ -45,7 +45,13 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Services
 
             var map = new BasketData
             {
-                BuyerId = customerBasketRequest.Buyerid
+                BuyerId = customerBasketRequest.Buyerid,
+                Coupon = customerBasketRequest.Coupon.Couponcode != null ? new Coupon
+                {
+                    CouponCode = customerBasketRequest.Coupon.Couponcode,
+                    ExpirationDate = customerBasketRequest.Coupon.Expirationdate,
+                    Discount = (decimal)customerBasketRequest.Coupon.Discount
+                } : new Coupon { Discount = 0 }
             };
 
             customerBasketRequest.Items.ToList().ForEach(item =>
@@ -78,7 +84,13 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Services
 
             var map = new CustomerBasketRequest
             {
-                Buyerid = basketData.BuyerId
+                Buyerid = basketData.BuyerId,
+                Coupon = basketData.Coupon.CouponCode != null ? new CouponResponse
+                {
+                    Couponcode = basketData.Coupon.CouponCode,
+                    Expirationdate = basketData.Coupon.ExpirationDate,
+                    Discount = (double)basketData.Coupon.Discount
+                } : new CouponResponse { Discount = 0 }
             };
 
             basketData.Items.ToList().ForEach(item =>

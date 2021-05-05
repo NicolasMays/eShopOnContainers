@@ -8,7 +8,7 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Models
         public string BuyerId { get; set; }
 
         public List<BasketDataItem> Items { get; set; } = new List<BasketDataItem>();
-
+        public Coupon Coupon { get; set; } = new Coupon();
         public BasketData()
         {
         }

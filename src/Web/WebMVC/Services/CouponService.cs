@@ -28,64 +28,39 @@ namespace Microsoft.eShopOnContainers.WebMVC.Services
 
         public async Task<Basket> Apply(Basket basket, string couponCode)
         {
+            // This should reach out to a coupon service to get the coupon details from the coupon code
+            // ***
+            Coupon coupon = couponCode == "SH360" ? new Coupon
+            {
+                CouponCode = couponCode,
+                ExpirationDate = "04/19/2025",
+                Discount = (decimal)0.1
+            } : new Coupon() { Discount = 0 };
+            // ***
+            // ***
+            // ***
             List<BasketItem> Items = new List<BasketItem>();
-            // Todo: Stub for now, should reach out to a coupon microservice
-            // Coupon for smart hotel 360 provides a 10% discount
-            if (couponCode == "SH360")
+            foreach (BasketItem Item in basket.Items.Select(item => item).ToList())
             {
-                foreach (BasketItem Item in basket.Items.Select(item => item).ToList())
+                Items.Add(
+                new BasketItem
                 {
-                    if (Item.isDiscounted == false)
-                    {
-                        Items.Add(
-                        new BasketItem
-                        {
-                            Id = Item.Id,
-                            ProductId = Item.ProductId,
-                            ProductName = Item.ProductName,
-                            UnitPrice = Item.UnitPrice * (decimal)(1 - 0.1),
-                            OldUnitPrice = Item.UnitPrice,
-                            Quantity = Item.Quantity,
-                            PictureUrl = Item.PictureUrl,
-                            isDiscounted = true,
-                            coupon = new Coupon { 
-                                CouponCode = couponCode,
-                                Discount = (decimal)0.1,
-                                ExpirationDate = "04/17/2021"
-                            }
-                        });
+                    Id = Item.Id,
+                    ProductId = Item.ProductId,
+                    ProductName = Item.ProductName,
+                    UnitPrice = Item.isDiscounted == true ? Item.UnitPrice : Item.UnitPrice * (1 - coupon.Discount),
+                    OldUnitPrice = Item.isDiscounted == true ? Item.OldUnitPrice : Item.UnitPrice,
+                    Quantity = Item.Quantity,
+                    PictureUrl = Item.PictureUrl,
+                    isDiscounted = coupon.Discount > 0 ? true : Item.isDiscounted,
+                });
+            }
 
-                    }
-                    else {
-                        Items.Add(
-                        new BasketItem
-                        {
-                            Id = Item.Id,
-                            ProductId = Item.ProductId,
-                            ProductName = Item.ProductName,
-                            UnitPrice = Item.UnitPrice,
-                            OldUnitPrice = Item.OldUnitPrice,
-                            Quantity = Item.Quantity,
-                            PictureUrl = Item.PictureUrl,
-                            isDiscounted = true,
-                            coupon = new Coupon
-                            {
-                                CouponCode = couponCode,
-                                Discount = (decimal)0.1,
-                                ExpirationDate = "04/17/2021"
-                            }
-                        });
-                    }
-                }
-            }
-            else
-            {
-                return basket;
-            }
             Basket basketUpdate = new Basket
             {
                 BuyerId = basket.BuyerId,
-                Items = Items
+                Items = Items,
+                Coupon = coupon
             };
             return basketUpdate;
         }

@@ -12,6 +12,7 @@ namespace Microsoft.eShopOnContainers.WebMVC.ViewModels
         // for read/write properties.
         public List<BasketItem> Items { get; init; } = new List<BasketItem>();
         public string BuyerId { get; init; }
+        public Coupon Coupon { get; init; } 
 
         public decimal Total()
         {
