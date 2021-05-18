@@ -49,7 +49,7 @@ jobs:
     - name: Login via Az module
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZ_CREDENTIALS}}
+        creds: ${{secrets.AZURE_CREDENTIALS}}
         enable-AzPSSession: true 
         
     - name: Run Deployment PowerShell script
