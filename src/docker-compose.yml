@@ -1,7 +1,8 @@
 version: '3.4'
 
 services:
-
+  prom:
+    image: prom/prometheus
   seq:
     image: datalust/seq:latest
 

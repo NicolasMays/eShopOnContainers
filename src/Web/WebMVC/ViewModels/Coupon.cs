@@ -4,19 +4,15 @@ using System.Linq;
 
 namespace Microsoft.eShopOnContainers.WebMVC.ViewModels
 {
-    public record Basket
+    public record Coupon
     {
         // Use property initializer syntax.
         // While this is often more useful for read only 
         // auto implemented properties, it can simplify logic
         // for read/write properties.
-        public List<BasketItem> Items { get; init; } = new List<BasketItem>();
-        public string BuyerId { get; init; }
-        public Coupon Coupon { get; init; } 
-
-        public decimal Total()
-        {
-            return Math.Round(Items.Sum(x => x.UnitPrice * x.Quantity), 2);
-        }
+        public string CouponCode { get; init; }
+        public string ExpirationDate { get; init; }
+        public decimal Discount { get; init; }
+       
     }
 }

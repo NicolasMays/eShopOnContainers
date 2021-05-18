@@ -15,12 +15,14 @@ message BasketRequest {
 
 message CustomerBasketRequest {
 	string buyerid = 1;
-	repeated BasketItemResponse items = 2;
+	CouponResponse coupon = 2;
+	repeated BasketItemResponse items = 3;
 }
 
 message CustomerBasketResponse {
 	string buyerid = 1;
-	repeated BasketItemResponse items = 2;
+	CouponResponse coupon = 2;
+	repeated BasketItemResponse items = 3;
 }
 
 message BasketItemResponse {
@@ -32,4 +34,10 @@ message BasketItemResponse {
 	int32 quantity = 6;
 	string pictureurl = 7;
 	bool isdiscounted = 8;
+}
+message CouponResponse
+{
+	string couponcode = 1;
+	string expirationdate = 2;
+	double discount = 3;
 }

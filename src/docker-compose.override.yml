@@ -7,6 +7,14 @@ version: '3.4'
 # An external IP or DNS name has to be used (instead localhost and the 10.0.75.1 IP) when testing the Web apps and the Xamarin apps from remote machines/devices using the same WiFi, for instance.
 
 services:
+  prom:
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+  
   seq:
     environment:
       - ACCEPT_EULA=Y
@@ -37,6 +45,7 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+      - "15692:15692"
 
   identity-api:
     environment:
@@ -315,5 +324,7 @@ volumes:
   eshop-nosqldata:
     external: false
   eshop-basketdata:
+    external: false
+  prometheus-data:
     external: false
 

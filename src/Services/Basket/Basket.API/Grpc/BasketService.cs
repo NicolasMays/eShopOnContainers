@@ -61,7 +61,13 @@ namespace GrpcBasket
         {
             var response = new CustomerBasketResponse
             {
-                Buyerid = customerBasket.BuyerId
+                Buyerid = customerBasket.BuyerId,
+                Coupon = customerBasket.Coupon == null ? new CouponResponse() { Discount = 0 } : new CouponResponse
+                {
+                    Couponcode = customerBasket.Coupon.CouponCode,
+                    Expirationdate = customerBasket.Coupon.ExpirationDate,
+                    Discount = (double)customerBasket.Coupon.Discount
+                }
             };
 
             customerBasket.Items.ForEach(item => response.Items.Add(new BasketItemResponse
@@ -83,7 +89,13 @@ namespace GrpcBasket
         {
             var response = new CustomerBasket
             {
-                BuyerId = customerBasketRequest.Buyerid
+                BuyerId = customerBasketRequest.Buyerid,
+                Coupon = customerBasketRequest.Coupon == null ? new Coupon() { Discount = 0 } : new Coupon
+                {
+                    CouponCode = customerBasketRequest.Coupon.Couponcode,
+                    ExpirationDate = customerBasketRequest.Coupon.Expirationdate,
+                    Discount = (decimal)customerBasketRequest.Coupon.Discount
+                }
             };
 
             customerBasketRequest.Items.ToList().ForEach(item => response.Items.Add(new BasketItem

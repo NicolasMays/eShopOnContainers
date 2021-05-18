@@ -25,7 +25,7 @@ namespace UnitTest.Basket.Application
             _catalogServiceMock = new Mock<ICatalogService>();
             _basketServiceMock = new Mock<IBasketService>();
             _identityParserMock = new Mock<IIdentityParser<ApplicationUser>>();
-            _couponServiceMock = new Mock<ICouponService>;
+            _couponServiceMock = new Mock<ICouponService>();
             _contextMock = new Mock<HttpContext>();
         }
 
