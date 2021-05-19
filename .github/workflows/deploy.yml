@@ -62,15 +62,16 @@ jobs:
           # Set container registry url 
           $containerRegestry = $Env:REGISTRY_NAME + '.azurecr.io'
 
-          cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
-          
+          cd $Env:GITHUB_WORKSPACE/deploy/k8s/nginx-ingress
+         
           # K8S Configuration Updates
           kubectl apply -f mandatory.yaml
           kubectl apply -f local-cm.yaml
           kubectl apply -f local-svc.yaml
-          kubectl apply -f aks-httpaddon-cfg.yaml
 
           # Login fix to enable large headers
+          cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
+          kubectl apply -f aks-httpaddon-cfg.yaml
           kubectl delete pod $(kubectl get pod -l app=addon-http-application-routing-nginx-ingress -n kube-system -o jsonpath="{.items[0].metadata.name}") -n kube-system
 
           # If DEPLOY_INFRA is true remove all services and infrastructure then deploy all services and infrastructure 
