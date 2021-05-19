@@ -1,5 +1,11 @@
 # Configure the Azure provider
 terraform {
+    backend "azurerm" {
+        resource_group_name  = "tfStateStorage" #Your resource group name
+        storage_account_name = "tfstatestorageaccteus" #Your storage account name
+        container_name       = "terraform-state" #Your container name
+        key                  = "terraform.tfstate"
+    }
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -13,8 +19,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-
-  subscription_id = "2dcecac3-1b82-4d4b-862e-38a6fcfbd2e9"
+  subscription_id = ""
   client_id       = "" #az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/SUBSCRIPTION_ID"
   client_secret   = ""
   tenant_id       = ""
