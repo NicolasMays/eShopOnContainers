@@ -32,7 +32,7 @@ defaults:
 env:
   REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
   CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
-  CLUSTER_RESOURCE_GROUP: ${{ secrets.CLUSTER_RG }}
+  CLUSTER_RESOURCE_GROUP: ${{ secrets.CLUSTER_RESOURCE_GROUP }}
   ACR_USERNAME: ${{ secrets.USERNAME }}
   ACR_PASSWORD: ${{ secrets.PASSWORD }}
   DEPLOY_INFRA: ${{ github.event.inputs.deployInfra }}
