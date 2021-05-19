@@ -64,6 +64,15 @@ jobs:
 
           cd $Env:GITHUB_WORKSPACE/deploy/k8s/helm
           
+          # K8S Configuration Updates
+          kubectl apply -f mandatory.yaml
+          kubectl apply -f local-cm.yaml
+          kubectl apply -f local-svc.yaml
+          kubectl apply -f aks-httpaddon-cfg.yaml
+
+          # Login fix to enable large headers
+          kubectl delete pod $(kubectl get pod -l app=addon-http-application-routing-nginx-ingress -n kube-system -o jsonpath="{.items[0].metadata.name}") -n kube-system
+
           # If DEPLOY_INFRA is true remove all services and infrastructure then deploy all services and infrastructure 
           if($Env:DEPLOY_INFRA -eq '$true')
           {
