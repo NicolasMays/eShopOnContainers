@@ -12,6 +12,7 @@
 #     g. APPINSIGHTS_KEY with your Application Insights instrumentation key 
 #
 # 
+name: Application Deploy
 
 on:
   workflow_dispatch:
