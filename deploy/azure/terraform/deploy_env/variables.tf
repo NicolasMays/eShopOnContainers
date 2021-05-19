@@ -1,4 +1,10 @@
 
+variable "subscription_id" { # Must have
+  type = string
+  description = "contains the subscription_id for service principal"
+  default   = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+}
+
 variable "client_id" { # Must have
   type = string
   description = "contains the Client Id for service principal"
