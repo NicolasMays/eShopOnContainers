@@ -19,10 +19,6 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = ""
-  client_id       = "" #az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/SUBSCRIPTION_ID"
-  client_secret   = ""
-  tenant_id       = ""
 }
 
 # Create a resource group
