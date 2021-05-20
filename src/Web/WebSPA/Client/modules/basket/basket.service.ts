@@ -22,7 +22,11 @@ export class BasketService {
     basket: IBasket = {
         buyerId: '',
         items: [],
-        coupon: null
+        coupon: {
+            CouponCode: '',
+            ExpirationDate: '',
+            Discount: 0
+        }
     };
 
     //observable that is fired when the basket is dropped
