@@ -17,7 +17,7 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
         private readonly ICatalogService _catalog;
         private readonly IBasketService _basket;
 
-        public BasketController(ICatalogService catalogService, IBasketService basketService)
+        public BasketController(ICatalogService catalogService, IBasketService basketService, I)
         {
             _catalog = catalogService;
             _basket = basketService;
@@ -33,16 +33,29 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
             {
                 return BadRequest("Need to pass at least one basket line");
             }
+            if (data.Coupon == null)
+            {
+                return BadRequest("Something wrong with your coupon");
+            }
 
             // Retrieve the current basket
             var basket = await _basket.GetById(data.BuyerId) ?? new BasketData(data.BuyerId);
-            var catalogItems = await _catalog.GetCatalogItemsAsync(data.Items.Select(x => x.ProductId));
 
+            var catalogItems = await _catalog.GetCatalogItemsAsync(data.Items.Select(x => x.ProductId));
+            if (catalogItems == null)
+            {
+                return BadRequest("What?");
+            }
             basket.Coupon = basket.Coupon ?? new Coupon
             {
                 Discount = 0
             };
-
+            
+            if (basket.Coupon == null)
+            {
+                return BadRequest("Something wrong with your coupon part 2");
+            }
+            
             // group by product id to avoid duplicates
             var itemsCalculated = data
                     .Items
@@ -81,6 +94,13 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
                     itemInBasket.Quantity = bitem.Quantity;
                 }
             }
+
+            if (basket.Coupon == null || basket.Items == null || basket.BuyerId == null )
+            {
+                return BadRequest("Something wrong with your coupon part 2");
+            }
+
+            Console.WriteLine($"{basket.BuyerId.ToString()} , {basket.Items.Count.ToString()} , {basket.Coupon.ToString()}, Debug Spot");
 
             await _basket.UpdateAsync(basket);
 
