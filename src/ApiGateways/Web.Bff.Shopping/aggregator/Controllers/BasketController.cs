@@ -37,10 +37,13 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
             {
                 return BadRequest("Something wrong with your coupon");
             }
-
+            if (data.BuyerId == null)
+            {
+                return BadRequest("Something wrong with your BuyerID");
+            }
             // Retrieve the current basket
             var basket = await _basket.GetById(data.BuyerId) ?? new BasketData(data.BuyerId);
-
+            
             var catalogItems = await _catalog.GetCatalogItemsAsync(data.Items.Select(x => x.ProductId));
             if (catalogItems == null)
             {
