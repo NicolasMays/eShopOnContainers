@@ -87,7 +87,7 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
                         ProductId = catalogItem.Id,
                         ProductName = catalogItem.Name,
                         PictureUrl = catalogItem.PictureUri,
-                        UnitPrice = itemInBasket.UnitPrice,
+                        UnitPrice = catalogItem.Price,
                         Quantity = bitem.Quantity,
                         isDiscounted = false
                     });
