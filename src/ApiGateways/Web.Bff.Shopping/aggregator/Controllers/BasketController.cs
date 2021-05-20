@@ -17,7 +17,7 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
         private readonly ICatalogService _catalog;
         private readonly IBasketService _basket;
 
-        public BasketController(ICatalogService catalogService, IBasketService basketService, I)
+        public BasketController(ICatalogService catalogService, IBasketService basketService)
         {
             _catalog = catalogService;
             _basket = basketService;
