@@ -16,7 +16,7 @@
         public int Quantity { get; set; }
 
         public string PictureUrl { get; set; }
-        public bool isDiscounted { get; internal set; }
+        public bool isDiscounted { get; set; }
     }
 
 }
