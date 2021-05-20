@@ -7,7 +7,7 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Models
     {
         public string CouponCode { get; set; }
         public string ExpirationDate { get; set; }
-        public decimal Discount { get; set; }
+        public decimal Discount { get; set; } = new decimal();
     }
 
 }

@@ -25,7 +25,7 @@ export class BasketService {
         coupon: {
             CouponCode: '',
             ExpirationDate: '',
-            Discount: 0
+            Discount: 0.0
         }
     };
 
