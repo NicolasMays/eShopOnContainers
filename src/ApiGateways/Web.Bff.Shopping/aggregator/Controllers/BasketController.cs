@@ -38,6 +38,11 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
             var basket = await _basket.GetById(data.BuyerId) ?? new BasketData(data.BuyerId);
             var catalogItems = await _catalog.GetCatalogItemsAsync(data.Items.Select(x => x.ProductId));
 
+            basket.Coupon = basket.Coupon ?? new Coupon
+            {
+                Discount = 0
+            };
+
             // group by product id to avoid duplicates
             var itemsCalculated = data
                     .Items
@@ -95,6 +100,12 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
 
             // Retrieve the current basket
             var currentBasket = await _basket.GetById(data.BasketId);
+
+            currentBasket.Coupon = currentBasket.Coupon ?? new Coupon
+            {
+                Discount = 0
+            };
+
             if (currentBasket == null)
             {
                 return BadRequest($"Basket with id {data.BasketId} not found.");
@@ -135,6 +146,12 @@ namespace Microsoft.eShopOnContainers.Web.Shopping.HttpAggregator.Controllers
 
             // Step 2: Get current basket status
             var currentBasket = (await _basket.GetById(data.BasketId)) ?? new BasketData(data.BasketId);
+
+            currentBasket.Coupon = currentBasket.Coupon ?? new Coupon
+            {
+                Discount = 0
+            };
+
             // Step 3: Search if exist product into basket
             var product = currentBasket.Items.SingleOrDefault(i => i.ProductId == item.Id);
             if (product != null)
