@@ -54,6 +54,7 @@
     <None Remove="Client\modules\shared\models\catalogItem.model.ts" />
     <None Remove="Client\modules\shared\models\catalogType.model.ts" />
     <None Remove="Client\modules\shared\models\configuration.model.ts" />
+    <None Remove="Client\modules\shared\models\coupon.model.ts" />
     <None Remove="Client\modules\shared\models\identity.model.ts" />
     <None Remove="Client\modules\shared\models\order-detail.model.ts" />
     <None Remove="Client\modules\shared\models\order.model.ts" />
@@ -134,6 +135,7 @@
     <TypeScriptCompile Include="Client\modules\shared\components\page-not-found\page-not-found.component.spec.ts" />
     <TypeScriptCompile Include="Client\modules\shared\components\page-not-found\page-not-found.component.ts" />
     <TypeScriptCompile Include="Client\modules\shared\components\pager\pager.ts" />
+    <TypeScriptCompile Include="Client\modules\shared\models\coupon.model.ts" />
     <TypeScriptCompile Include="Client\modules\shared\models\basket.model.ts" />
     <TypeScriptCompile Include="Client\modules\shared\models\basketCheckout.model.ts" />
     <TypeScriptCompile Include="Client\modules\shared\models\basketItem.model.ts" />

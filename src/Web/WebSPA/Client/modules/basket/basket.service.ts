@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { DataService } from '../shared/services/data.service';
 import { SecurityService } from '../shared/services/security.service';
 import { IBasket } from '../shared/models/basket.model';
+import { ICoupon } from '../shared/models/coupon.model';
 import { IOrder } from '../shared/models/order.model';
 import { IBasketCheckout } from '../shared/models/basketCheckout.model';
 import { BasketWrapperService } from '../shared/services/basket.wrapper.service';
@@ -20,7 +21,12 @@ export class BasketService {
     private purchaseUrl: string = '';
     basket: IBasket = {
         buyerId: '',
-        items: []
+        items: [],
+        coupon: {
+            CouponCode: '',
+            ExpirationDate: '',
+            Discount: 0
+        }
     };
 
     //observable that is fired when the basket is dropped
